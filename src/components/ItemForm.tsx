@@ -5,10 +5,10 @@ import {
   TextField,
   Button,
   Typography,
-  Box
+  Box,
+  Grid
 } from '@mui/material';
 import { Item } from '../types';
-import Grid from '@mui/material/Grid';
 
 interface ItemFormProps {
   onSubmit: (item: { name: string; description: string; price: string }) => void;
@@ -57,79 +57,75 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSubmit, initialItem, onCancel }) 
       <Typography variant="h5" component="h2" gutterBottom align="center">
         {initialItem?.id ? 'Edit Item' : 'Add Item'}
       </Typography>
-      <Box component="form" onSubmit={handleSubmit(onSubmitForm)} sx={{ mt: 2 }}> 
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: 'Name is required' }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Name"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                  variant="outlined"
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                  multiline
-                  rows={3}
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Controller
-              name="price"
-              control={control}
-              rules={{
-                required: 'Price is required',
-                validate: (value) => {
-                  const num = parseFloat(value);
-                  return !isNaN(num) && num > 0 || 'Price must be a positive number';
-                }
-              }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Price"
-                  type="number"
-                  error={!!errors.price}
-                  helperText={errors.price?.message}
-                  variant="outlined"
-                  inputProps={{ step: '0.01' }}
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={12}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-              <Button type="submit" variant="contained" color="primary">
-                {initialItem?.id ? 'Update' : 'Add'}
-              </Button>
-              {onCancel && (
-                <Button type="button" variant="outlined" onClick={onCancel}>
-                  Cancel
-                </Button>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
+      <Box component="form" onSubmit={handleSubmit(onSubmitForm)} sx={{ mt: 2 }}>
+        <Box sx={{ mb: 2 }}>
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: 'Name is required' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Name"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                variant="outlined"
+              />
+            )}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Description"
+                variant="outlined"
+                multiline
+                rows={3}
+              />
+            )}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <Controller
+            name="price"
+            control={control}
+            rules={{
+              required: 'Price is required',
+              validate: (value) => {
+                const num = parseFloat(value);
+                return !isNaN(num) && num > 0 || 'Price must be a positive number';
+              }
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Price"
+                type="number"
+                error={!!errors.price}
+                helperText={errors.price?.message}
+                variant="outlined"
+                inputProps={{ step: '0.01' }}
+              />
+            )}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+          <Button type="submit" variant="contained" color="primary">
+            {initialItem?.id ? 'Update' : 'Add'}
+          </Button>
+          {onCancel && (
+            <Button type="button" variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+        </Box>
       </Box>
     </Paper>
   );

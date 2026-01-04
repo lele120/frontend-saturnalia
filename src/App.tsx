@@ -75,6 +75,7 @@ function App() {
         Item Manager
       </Typography>
       {error && (
+        // @ts-ignore
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
