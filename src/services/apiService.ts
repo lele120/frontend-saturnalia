@@ -8,12 +8,19 @@ const api = axios.create({
 });
 
 // CRUD operations for items
-export const getItems = async (sortBy?: string, order?: 'asc' | 'desc', descriptionFilter?: string): Promise<Item[]> => {
+export interface ItemsResponse {
+  items: Item[];
+  total: number;
+}
+
+export const getItems = async (skip?: number, limit?: number, sortBy?: string, order?: 'asc' | 'desc', descriptionFilter?: string): Promise<ItemsResponse> => {
   const params = new URLSearchParams();
+  if (skip !== undefined) params.append('skip', skip.toString());
+  if (limit !== undefined) params.append('limit', limit.toString());
   if (sortBy) params.append('sort_by', sortBy);
   if (order) params.append('order', order);
   if (descriptionFilter) params.append('description_filter', descriptionFilter);
-  const response = await api.get(`/items?${params.toString()}`);
+  const response = await api.get(`/items/?${params.toString()}`);
   return response.data;
 };
 

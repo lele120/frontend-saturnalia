@@ -8,7 +8,8 @@ import {
   Paper,
   IconButton,
   Typography,
-  TableSortLabel
+  TableSortLabel,
+  TablePagination
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import React from 'react';
@@ -21,9 +22,14 @@ interface ItemListProps {
   sortField: string;
   sortOrder: 'asc' | 'desc';
   onSortChange: (field: string, order: 'asc' | 'desc') => void;
+  total: number;
+  page: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items, onEdit, onDelete, sortField, sortOrder, onSortChange }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, onEdit, onDelete, sortField, sortOrder, onSortChange, total, page, pageSize, onPageChange, onPageSizeChange }) => {
   const handleSort = (field: string) => {
     if (sortField === field) {
       onSortChange(field, sortOrder === 'asc' ? 'desc' : 'asc');
@@ -56,7 +62,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, onEdit, onDelete, sortField,
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((item) => (
+            {items && items.map((item) => (
               <TableRow key={item.id} hover>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.description}</TableCell>
@@ -74,6 +80,15 @@ const ItemList: React.FC<ItemListProps> = ({ items, onEdit, onDelete, sortField,
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={total || 0}
+        page={page}
+        onPageChange={(event, page) => onPageChange(page)}
+        rowsPerPage={pageSize}
+        onRowsPerPageChange={(event) => onPageSizeChange(parseInt(event.target.value, 10))}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
     </div>
   );
 };

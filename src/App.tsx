@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import { Container, Typography, Button, Alert, Box, TextField } from '@mui/material'
 import ItemList from './components/ItemList'
 import ItemForm from './components/ItemForm'
-import { getItems, createItem, updateItem, deleteItem } from './services/apiService'
+import { getItems, createItem, updateItem, deleteItem, ItemsResponse } from './services/apiService'
 import { Item } from './types'
 
 function App() {
   const [items, setItems] = useState<Item[]>([])
+  const [total, setTotal] = useState<number>(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [editingItem, setEditingItem] = useState<Item | null>(null)
@@ -14,17 +15,20 @@ function App() {
   const [sortField, setSortField] = useState<string>('name')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [descriptionFilter, setDescriptionFilter] = useState<string>('')
+  const [page, setPage] = useState<number>(0)
+  const [pageSize, setPageSize] = useState<number>(10)
 
   useEffect(() => {
     fetchItems()
-  }, [sortField, sortOrder, descriptionFilter])
+  }, [sortField, sortOrder, descriptionFilter, page, pageSize])
 
   const fetchItems = async () => {
     setLoading(true)
     setError('')
     try {
-      const data = await getItems(sortField, sortOrder, descriptionFilter || undefined)
-      setItems(data)
+      const data = await getItems(page * pageSize, pageSize, sortField, sortOrder, descriptionFilter || undefined)
+      setItems(data.items)
+      setTotal(data.total)
     } catch {
       setError('Failed to fetch items')
     } finally {
@@ -112,7 +116,18 @@ function App() {
           sx={{ minWidth: 300 }}
         />
       </Box>
-      <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} sortField={sortField} sortOrder={sortOrder} onSortChange={handleSortChange} />
+      <ItemList 
+        items={items} 
+        onEdit={handleEdit} 
+        onDelete={handleDelete} 
+        sortField={sortField} 
+        sortOrder={sortOrder} 
+        onSortChange={handleSortChange} 
+        total={total} 
+        page={page} 
+        pageSize={pageSize} 
+        onPageChange={setPage} 
+        onPageSizeChange={setPageSize} />
       {showForm && (
         <Box sx={{ mt: 4 }}>
           <ItemForm
