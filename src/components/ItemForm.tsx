@@ -5,8 +5,7 @@ import {
   TextField,
   Button,
   Typography,
-  Box,
-  Grid
+  Box
 } from '@mui/material';
 import { Item } from '../types';
 

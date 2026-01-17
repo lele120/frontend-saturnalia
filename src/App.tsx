@@ -11,22 +11,29 @@ function App() {
   const [error, setError] = useState('')
   const [editingItem, setEditingItem] = useState<Item | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [sortField, setSortField] = useState<string>('name')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
   useEffect(() => {
     fetchItems()
-  }, [])
+  }, [sortField, sortOrder])
 
   const fetchItems = async () => {
     setLoading(true)
     setError('')
     try {
-      const data = await getItems()
+      const data = await getItems(sortField, sortOrder)
       setItems(data)
     } catch {
       setError('Failed to fetch items')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleSortChange = (field: string, order: 'asc' | 'desc') => {
+    setSortField(field)
+    setSortOrder(order)
   }
 
   const handleAdd = () => {
@@ -95,7 +102,7 @@ function App() {
           Add Item
         </Button>
       </Box>
-      <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} />
+      <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} sortField={sortField} sortOrder={sortOrder} onSortChange={handleSortChange} />
       {showForm && (
         <Box sx={{ mt: 4 }}>
           <ItemForm
