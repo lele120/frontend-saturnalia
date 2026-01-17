@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Typography, Button, Alert, Box } from '@mui/material'
+import { Container, Typography, Button, Alert, Box, TextField } from '@mui/material'
 import ItemList from './components/ItemList'
 import ItemForm from './components/ItemForm'
 import { getItems, createItem, updateItem, deleteItem } from './services/apiService'
@@ -13,16 +13,17 @@ function App() {
   const [showForm, setShowForm] = useState(false)
   const [sortField, setSortField] = useState<string>('name')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [descriptionFilter, setDescriptionFilter] = useState<string>('')
 
   useEffect(() => {
     fetchItems()
-  }, [sortField, sortOrder])
+  }, [sortField, sortOrder, descriptionFilter])
 
   const fetchItems = async () => {
     setLoading(true)
     setError('')
     try {
-      const data = await getItems(sortField, sortOrder)
+      const data = await getItems(sortField, sortOrder, descriptionFilter || undefined)
       setItems(data)
     } catch {
       setError('Failed to fetch items')
@@ -101,6 +102,15 @@ function App() {
         >
           Add Item
         </Button>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+        <TextField
+          label="Filter by Description"
+          variant="outlined"
+          value={descriptionFilter}
+          onChange={(e) => setDescriptionFilter(e.target.value)}
+          sx={{ minWidth: 300 }}
+        />
       </Box>
       <ItemList items={items} onEdit={handleEdit} onDelete={handleDelete} sortField={sortField} sortOrder={sortOrder} onSortChange={handleSortChange} />
       {showForm && (

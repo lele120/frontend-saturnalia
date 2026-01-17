@@ -8,10 +8,11 @@ const api = axios.create({
 });
 
 // CRUD operations for items
-export const getItems = async (sortBy?: string, order?: 'asc' | 'desc'): Promise<Item[]> => {
+export const getItems = async (sortBy?: string, order?: 'asc' | 'desc', descriptionFilter?: string): Promise<Item[]> => {
   const params = new URLSearchParams();
   if (sortBy) params.append('sort_by', sortBy);
   if (order) params.append('order', order);
+  if (descriptionFilter) params.append('description_filter', descriptionFilter);
   const response = await api.get(`/items?${params.toString()}`);
   return response.data;
 };
