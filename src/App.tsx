@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Container, Typography, Button, Alert, Box, TextField } from '@mui/material'
+import { Container, Typography, Button, Alert, Box, TextField, Tabs, Tab } from '@mui/material'
 import ItemList from './components/ItemList'
 import ItemForm from './components/ItemForm'
+import TerreniPage from './pages/TerreniPage'
 import { getItems, createItem, updateItem, deleteItem, ItemsResponse } from './services/apiService'
 import { Item } from './types'
 
 function App() {
+  const [activeTab, setActiveTab] = useState(0)
   const [items, setItems] = useState<Item[]>([])
   const [total, setTotal] = useState<number>(0)
   const [loading, setLoading] = useState(false)
@@ -84,59 +86,73 @@ function App() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h3" component="h1" gutterBottom align="center">
-        Item Manager
+        Saturnalia Portal
       </Typography>
-      {error && (
-        // @ts-ignore
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-      {loading && (
-        <Typography variant="body1" align="center" sx={{ mb: 2 }}>
-          Loading...
-        </Typography>
-      )}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-        <Button
-          variant="contained"
-          color="success"
-          size="large"
-          onClick={handleAdd}
-        >
-          Add Item
-        </Button>
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} aria-label="portal tabs">
+          <Tab label="Items Manager" />
+          <Tab label="Fascicolo Agricolo" />
+        </Tabs>
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-        <TextField
-          label="Filter by Description"
-          variant="outlined"
-          value={descriptionFilter}
-          onChange={(e) => setDescriptionFilter(e.target.value)}
-          sx={{ minWidth: 300 }}
-        />
-      </Box>
-      <ItemList 
-        items={items} 
-        onEdit={handleEdit} 
-        onDelete={handleDelete} 
-        sortField={sortField} 
-        sortOrder={sortOrder} 
-        onSortChange={handleSortChange} 
-        total={total} 
-        page={page} 
-        pageSize={pageSize} 
-        onPageChange={setPage} 
-        onPageSizeChange={setPageSize} />
-      {showForm && (
-        <Box sx={{ mt: 4 }}>
-          <ItemForm
-            onSubmit={handleSubmit}
-            initialItem={editingItem}
-            onCancel={handleCancel}
-          />
-        </Box>
+
+      {activeTab === 0 && (
+        <>
+          {error && (
+            // @ts-ignore
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          {loading && (
+            <Typography variant="body1" align="center" sx={{ mb: 2 }}>
+              Loading...
+            </Typography>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={handleAdd}
+            >
+              Add Item
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <TextField
+              label="Filter by Description"
+              variant="outlined"
+              value={descriptionFilter}
+              onChange={(e) => setDescriptionFilter(e.target.value)}
+              sx={{ minWidth: 300 }}
+            />
+          </Box>
+          <ItemList 
+            items={items} 
+            onEdit={handleEdit} 
+            onDelete={handleDelete} 
+            sortField={sortField} 
+            sortOrder={sortOrder} 
+            onSortChange={handleSortChange} 
+            total={total} 
+            page={page} 
+            pageSize={pageSize} 
+            onPageChange={setPage} 
+            onPageSizeChange={setPageSize} />
+          {showForm && (
+            <Box sx={{ mt: 4 }}>
+              <ItemForm
+                onSubmit={handleSubmit}
+                initialItem={editingItem}
+                onCancel={handleCancel}
+              />
+            </Box>
+          )}
+        </>
       )}
+
+      {activeTab === 1 && <TerreniPage />}
     </Container>
   )
 }

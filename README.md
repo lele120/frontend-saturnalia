@@ -1,6 +1,6 @@
 # Frontend Saturnalia
 
-A React application built with Vite, TypeScript, featuring Material-UI components for a modern UI.
+Frontend per il portale fascicolo aziendale agricolo. Applicazione React con Vite, TypeScript e Material-UI per gestire terreni e particelle catastali.
 
 ## Prerequisites
 
@@ -72,6 +72,29 @@ To run ESLint:
 ```bash
 npm run lint
 ```
+
+## Features
+
+### Item Manager
+- CRUD operations per items
+- Paginazione e filtri
+- Ordinamento
+
+### Fascicolo Agricolo (Terreni)
+- Creazione terreni con particelle catastali
+- Validazione progressive (stesso comune, area ≤ somma superfici)
+- Lookup particelle in tempo reale
+- Lista terreni salvati con dati popolati di esempio
+
+## API Integration
+
+L'app comunica con il backend FastAPI su `VITE_API_BASE_URL`.
+
+### Endpoints Terreni
+- `GET /terreni/comuni` - Lista comuni disponibili
+- `GET /terreni/particelle?comune=...&foglio=...&particella=...` - Lookup particella
+- `POST /terreni/` - Crea terreno
+- `GET /terreni/` - Lista terreni
 
 ## Technologies Used
 

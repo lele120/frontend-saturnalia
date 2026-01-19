@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Item } from '../types';
+import { Item, Terreno, TerrenoCreate, ParticellaLookup, ErrorResponse } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
 
@@ -36,4 +36,37 @@ export const updateItem = async (id: number, item: Omit<Item, 'id'>): Promise<It
 
 export const deleteItem = async (id: number): Promise<void> => {
   await api.delete(`/items/${id}`);
+};
+
+// Terreni operations
+export const getTerreni = async (): Promise<Terreno[]> => {
+  const response = await api.get('/terreni/');
+  return response.data;
+};
+
+export const createTerreno = async (terreno: TerrenoCreate): Promise<Terreno> => {
+  const response = await api.post('/terreni/', terreno);
+  return response.data;
+};
+
+export const getComuni = async (): Promise<{ comuni: { value: string; label: string }[] }> => {
+  const response = await api.get('/terreni/comuni');
+  return response.data;
+};
+
+export const lookupParticella = async (
+  comune: string,
+  foglio: number,
+  particella: number,
+  sezione?: string
+): Promise<ParticellaLookup> => {
+  const params = new URLSearchParams({
+    comune,
+    foglio: foglio.toString(),
+    particella: particella.toString(),
+  });
+  if (sezione) params.append('sezione', sezione);
+
+  const response = await api.get(`/terreni/particelle?${params.toString()}`);
+  return response.data;
 };
